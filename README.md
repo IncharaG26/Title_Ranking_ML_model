@@ -1,123 +1,391 @@
-Scientific Paper Title Relevance Scoring using ArXiv Dataset
+Scientific Paper Title Relevance Scoring (ArXiv Dataset)
+📌 Overview
 
-This project builds a Machine Learning model to evaluate how well a research paper title matches its abstract.
-The model is trained using real scientific metadata from the ArXiv Kaggle dataset (Cornell University).
+This project implements a Machine Learning system that evaluates how well a research paper title matches its abstract.
+It predicts:
 
-The system outputs:
-
-A semantic similarity score (0.10 — 0.95)
+A relevance score (between 0.10 – 0.95)
 
 A relevance category
+(Highly Relevant, Relevant, Partially Relevant, Low Relevance)
 
-Highly Relevant
+A Python Tkinter GUI is included to test title-abstract pairs interactively.
 
-Relevant
+🗄 Dataset Details
+Property	Description
+Source	Kaggle – Cornell University (arXiv Metadata)
+Type	Scientific Research Paper Metadata
+Fields Used	title, abstract
+Total Raw Records	2.2 Million+
+Loaded for Training	First 20,000 streamed JSON rows
+Final Records after Cleaning	~15,000 unique title-abstract pairs
+📌 Why ArXiv Dataset?
 
-Partially Relevant
+Real academic content (high-quality text)
 
-Low Relevance
+Public domain metadata (free for projects)
 
-A Tkinter-based GUI is provided for easy testing with custom titles and abstracts.
+Covers multiple scientific domains
 
-Dataset Information
+Ideal for semantic similarity learning
 
-Source: Kaggle (Cornell University — ArXiv Metadata)
-
-Fields Used: Title, Abstract
-
-Loading Method: Streaming JSON (memory-safe)
-
-Rows Loaded Initially: 20,000
-
-Rows Used for Training After Cleaning: ~15,000
-
-Dataset Processing Steps
+🧹 Data Processing Steps
 Step	Description
-Load ArXiv metadata	Stream-first approach to avoid MemoryError
-Clean text	Using simple_clean()
-Remove duplicates	Based on title + abstract signature
-Create semantic label	Cosine similarity using SBERT embeddings
-Feature extraction	SBERT + TF-IDF + SVD fusion
-Model used	LightGBM Regressor
-Model Pipeline Flow
+Streaming JSON load	Prevents MemoryError
+Text cleaning	Removal of noise, special chars
+Duplicate removal	Title+abstract signature
+Score labeling	SBERT cosine similarity
+Shuffle	Avoids ordering bias
 
+Target score formula:
 
-Score Classification
-Score Range	Category	Meaning
-≥ 0.80	Highly Relevant	Strong semantic alignment
+score = 0.10 + cosine_similarity * 0.85
+
+🔍 Feature Engineering
+Component	Purpose
+SBERT Embeddings	Contextual semantic representation
+TF-IDF Matrix	Keyword-based importance
+SVD	Dimensionality reduction
+FeatureFusionBuilder	Unified optimized feature set
+🚀 Model Training
+Model	LightGBM Regressor
+Validation	5-Fold Cross Validation
+Metrics	RMSE & Spearman Correlation
+Output Range	0.10 → 0.95
+
+Saved output files (in outputs/):
+
+models/lgbm.joblib
+
+scaler.joblib
+
+feature_builder.joblib
+
+predictions_lgbm.csv
+
+pipeline_meta.json
+
+🏷 Score Classification
+Score Range	Category	Interpretation
+≥ 0.80	Highly Relevant	Very strong match
 0.60 – 0.79	Relevant	Good match
-0.40 – 0.59	Partially Relevant	Some mismatch
+0.40 – 0.59	Partially Relevant	Acceptable match
 < 0.40	Low Relevance	Weak or unrelated
-Folder Structure
+🖥 GUI Application
+
+A simple desktop GUI is provided using Tkinter.
+
+Launch GUI:
+python gui_app.py
+
+GUI Output Example
+Input Title	Score	Category
+Deep Learning Approaches for Medical Image Segmentation	0.88	Highly Relevant
+📁 Project Structure
 Title_Ranking_ML_model/
 │
-├── src/                          # Preprocessing & feature scripts
-├── outputs/                      # Saved model + predictions
-├── datasets/                     # ArXiv dataset (ignored in Git)
-├── gui_app.py                    # GUI application
-├── run_pipeline_final.py         # Main training script
-├── bulk_test.py                  # Batch testing
-├── model_test_lgb.py             # Model evaluation
+├── src/                        # Preprocessing + feature tools
+├── outputs/                    # Model artifacts & predictions
+├── datasets/                   # ArXiv data (ignored in Git)
+├── gui_app.py                  # GUI program
+├── run_pipeline_final.py       # Full training pipeline
+├── bulk_test.py                # Batch prediction script
+├── model_test_lgb.py           # Model evaluation
 ├── requirements.txt
 └── README.md
 
-Installation & Setup
-1️⃣ Create Virtual Environment
-python -m venv venv
+⚙️ Installation
+pip install -r requirements.txt
 
-
-Activate:
+(Optional) Create a Virtual Environment
 
 Windows:
 
+python -m venv venv
 venv\Scripts\activate
 
-2️⃣ Install Dependencies
-pip install -r requirements.txt
-
-Training the Model
+▶️ Model Training
 python run_pipeline_final.py
 
 
-Outputs stored in:
+Output artifacts generated automatically inside /outputs.
 
-outputs/
+📌 Future Improvements
 
-Running the GUI
+Improve SBERT with domain-specific fine-tuning
+
+Deploy model as a Web Application
+
+Add explainability metrics for research evaluation
+
+👤 Author
+
+Inchara G
+Computer Science Engineering StudentScientific Paper Title Relevance Scoring (ArXiv Dataset)
+📌 Overview
+
+This project implements a Machine Learning system that evaluates how well a research paper title matches its abstract.
+It predicts:
+
+A relevance score (between 0.10 – 0.95)
+
+A relevance category
+(Highly Relevant, Relevant, Partially Relevant, Low Relevance)
+
+A Python Tkinter GUI is included to test title-abstract pairs interactively.
+
+📂 System Architecture
+flowchart TD
+    A[Load ArXiv Dataset<br>Streaming JSON] --> B[Preprocess & Normalize Text<br>(simple_clean)]
+    B --> C[Remove Duplicates<br>empty/null filtering]
+    C --> D[Generate SBERT Embeddings<br>for title & abstract]
+    D --> E[Compute Cosine Similarity<br>Target Score]
+    E --> F[Feature Fusion<br>TF-IDF + SVD + SBERT]
+    F --> G[Train Model<br>LightGBM + 5-Fold CV]
+    G --> H[Save Artifacts<br>model, scaler, features, predictions]
+    H --> I[Test via GUI<br>Score + Category Output]
+
+🗄 Dataset Details
+Property	Description
+Source	Kaggle – Cornell University (arXiv Metadata)
+Type	Scientific Research Paper Metadata
+Fields Used	title, abstract
+Total Raw Records	2.2 Million+
+Loaded for Training	First 20,000 streamed JSON rows
+Final Records after Cleaning	~15,000 unique title-abstract pairs
+📌 Why ArXiv Dataset?
+
+Real academic content (high-quality text)
+
+Public domain metadata (free for projects)
+
+Covers multiple scientific domains
+
+Ideal for semantic similarity learning
+
+🧹 Data Processing Steps
+Step	Description
+Streaming JSON load	Prevents MemoryError
+Text cleaning	Removal of noise, special chars
+Duplicate removal	Title+abstract signature
+Score labeling	SBERT cosine similarity
+Shuffle	Avoids ordering bias
+
+Target score formula:
+
+score = 0.10 + cosine_similarity * 0.85
+
+🔍 Feature Engineering
+Component	Purpose
+SBERT Embeddings	Contextual semantic representation
+TF-IDF Matrix	Keyword-based importance
+SVD	Dimensionality reduction
+FeatureFusionBuilder	Unified optimized feature set
+🚀 Model Training
+Model	LightGBM Regressor
+Validation	5-Fold Cross Validation
+Metrics	RMSE & Spearman Correlation
+Output Range	0.10 → 0.95
+
+Saved output files (in outputs/):
+
+models/lgbm.joblib
+
+scaler.joblib
+
+feature_builder.joblib
+
+predictions_lgbm.csv
+
+pipeline_meta.json
+
+🏷 Score Classification
+Score Range	Category	Interpretation
+≥ 0.80	Highly Relevant	Very strong match
+0.60 – 0.79	Relevant	Good match
+0.40 – 0.59	Partially Relevant	Acceptable match
+< 0.40	Low Relevance	Weak or unrelated
+🖥 GUI Application
+
+A simple desktop GUI is provided using Tkinter.
+
+Launch GUI:
 python gui_app.py
 
+GUI Output Example
+Input Title	Score	Category
+Deep Learning Approaches for Medical Image Segmentation	0.88	Highly Relevant
+📁 Project Structure
+Title_Ranking_ML_model/
+│
+├── src/                        # Preprocessing + feature tools
+├── outputs/                    # Model artifacts & predictions
+├── datasets/                   # ArXiv data (ignored in Git)
+├── gui_app.py                  # GUI program
+├── run_pipeline_final.py       # Full training pipeline
+├── bulk_test.py                # Batch prediction script
+├── model_test_lgb.py           # Model evaluation
+├── requirements.txt
+└── README.md
 
-Enter:
+⚙️ Installation
+pip install -r requirements.txt
 
-Title
+(Optional) Create a Virtual Environment
 
-Abstract
-→ Model will display score + category
+Windows:
 
-Example Test Records (GUI Demo)
+python -m venv venv
+venv\Scripts\activate
 
-Deep Learning Approaches for Medical Image Segmentation
+▶️ Model Training
+python run_pipeline_final.py
 
-Score: 0.88
 
-Category: Highly Relevant
+Output artifacts generated automatically inside /outputs.
 
-Results
+📌 Future Improvements
 
-Successfully trained a model using real research data
+Improve SBERT with domain-specific fine-tuning
 
-Model generalizes well to unseen title–abstract pairs
+Deploy model as a Web Application
 
-GUI demonstrates real-time prediction
+Add explainability metrics for research evaluation
 
-Future Improvements
+👤 Author
 
-Fine-tuning SBERT on ArXiv domain
+Inchara G
+Computer Science Engineering StudentScientific Paper Title Relevance Scoring (ArXiv Dataset)
+📌 Overview
 
-Multi-category classification with expert labels
+This project implements a Machine Learning system that evaluates how well a research paper title matches its abstract.
+It predicts:
 
-Deploy GUI as a web application (Streamlit)
+A relevance score (between 0.10 – 0.95)
 
-Contributor
+A relevance category
+(Highly Relevant, Relevant, Partially Relevant, Low Relevance)
+
+A Python Tkinter GUI is included to test title-abstract pairs interactively.
+
+📂 System Architecture
+flowchart TD
+    A[Load ArXiv Dataset<br>Streaming JSON] --> B[Preprocess & Normalize Text<br>(simple_clean)]
+    B --> C[Remove Duplicates<br>empty/null filtering]
+    C --> D[Generate SBERT Embeddings<br>for title & abstract]
+    D --> E[Compute Cosine Similarity<br>Target Score]
+    E --> F[Feature Fusion<br>TF-IDF + SVD + SBERT]
+    F --> G[Train Model<br>LightGBM + 5-Fold CV]
+    G --> H[Save Artifacts<br>model, scaler, features, predictions]
+    H --> I[Test via GUI<br>Score + Category Output]
+
+🗄 Dataset Details
+Property	Description
+Source	Kaggle – Cornell University (arXiv Metadata)
+Type	Scientific Research Paper Metadata
+Fields Used	title, abstract
+Total Raw Records	2.2 Million+
+Loaded for Training	First 20,000 streamed JSON rows
+Final Records after Cleaning	~15,000 unique title-abstract pairs
+📌 Why ArXiv Dataset?
+
+Real academic content (high-quality text)
+
+Public domain metadata (free for projects)
+
+Covers multiple scientific domains
+
+Ideal for semantic similarity learning
+
+🧹 Data Processing Steps
+Step	Description
+Streaming JSON load	Prevents MemoryError
+Text cleaning	Removal of noise, special chars
+Duplicate removal	Title+abstract signature
+Score labeling	SBERT cosine similarity
+Shuffle	Avoids ordering bias
+
+Target score formula:
+
+score = 0.10 + cosine_similarity * 0.85
+
+🔍 Feature Engineering
+Component	Purpose
+SBERT Embeddings	Contextual semantic representation
+TF-IDF Matrix	Keyword-based importance
+SVD	Dimensionality reduction
+FeatureFusionBuilder	Unified optimized feature set
+🚀 Model Training
+Model	LightGBM Regressor
+Validation	5-Fold Cross Validation
+Metrics	RMSE & Spearman Correlation
+Output Range	0.10 → 0.95
+
+Saved output files (in outputs/):
+
+models/lgbm.joblib
+
+scaler.joblib
+
+feature_builder.joblib
+
+predictions_lgbm.csv
+
+pipeline_meta.json
+
+🏷 Score Classification
+Score Range	Category	Interpretation
+≥ 0.80	Highly Relevant	Very strong match
+0.60 – 0.79	Relevant	Good match
+0.40 – 0.59	Partially Relevant	Acceptable match
+< 0.40	Low Relevance	Weak or unrelated
+🖥 GUI Application
+
+A simple desktop GUI is provided using Tkinter.
+
+Launch GUI:
+python gui_app.py
+
+GUI Output Example
+Input Title	Score	Category
+Deep Learning Approaches for Medical Image Segmentation	0.88	Highly Relevant
+📁 Project Structure
+Title_Ranking_ML_model/
+│
+├── src/                        # Preprocessing + feature tools
+├── outputs/                    # Model artifacts & predictions
+├── datasets/                   # ArXiv data (ignored in Git)
+├── gui_app.py                  # GUI program
+├── run_pipeline_final.py       # Full training pipeline
+├── bulk_test.py                # Batch prediction script
+├── model_test_lgb.py           # Model evaluation
+├── requirements.txt
+└── README.md
+
+⚙️ Installation
+pip install -r requirements.txt
+
+(Optional) Create a Virtual Environment
+
+Windows:
+
+python -m venv venv
+venv\Scripts\activate
+
+▶️ Model Training
+python run_pipeline_final.py
+
+
+Output artifacts generated automatically inside /outputs.
+
+📌 Future Improvements
+
+Improve SBERT with domain-specific fine-tuning
+
+Deploy model as a Web Application
+
+Add explainability metrics for research evaluation
+
+👤 Contributor
 
 Inchara G
