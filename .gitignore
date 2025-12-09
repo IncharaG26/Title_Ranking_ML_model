@@ -1,0 +1,9 @@
+venv/
+datasets/
+outputs/
+__pycache__/
+*.pyc
+*.joblib
+*.pkl
+*.pickle
+*.log
