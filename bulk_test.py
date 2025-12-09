@@ -34,7 +34,7 @@ def map_category(s):
 # ----------------------------
 def run_bulk_test():
 
-    INPUT_CSV = "C:/Users/INCHARA G/Title_Ranking_ML_model/datasets/real_world_dataset_2000_cleaned.csv"
+    INPUT_CSV = "C:\Users\INCHARA G\OneDrive\Desktop\aiml_arxiv\datasets\real_world_dataset_2000_cleaned.csv"
     OUT_DIR = "outputs/bulk_test_results"
     PLOT_DIR = os.path.join(OUT_DIR, "plots")
     os.makedirs(OUT_DIR, exist_ok=True)
